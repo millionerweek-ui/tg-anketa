@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Анкета запуска проекта — Telegram-платформа с AI</title>
+<meta property="og:title" content="Анкета запуска проекта — Telegram-платформа с AI">
+<meta property="og:description" content="10–15 минут, с телефона, в один тап. Прогресс сохраняется — можно прервать и продолжить.">
+<meta name="description" content="Анкета запуска проекта: Telegram-платформа продаж с AI. 13 блоков, ~70 вопросов, заполняется с телефона.">
+<style>
+  :root{
+    --blue:#2481cc; --blue-strong:#1c6cb0; --blue-light:#e8f3fb;
+    --bg:#f2f5f8; --card:#ffffff; --text:#1a2733; --muted:#6b7c8c;
+    --ok:#27ae60; --ok-light:#e9f9f0; --warn:#e67e22; --line:#e2e9f0;
+    --radius:16px; --shadow:0 2px 10px rgba(20,40,70,.07);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#10151c; --card:#1a222c; --text:#e8eef4; --muted:#8fa1b3;
+      --blue:#3ea2f5; --blue-strong:#5cb3f8; --blue-light:#1c3040;
+      --ok:#2ecc71; --ok-light:#16302a; --line:#2a3644; --shadow:0 2px 10px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+       background:var(--bg); color:var(--text); font-size:17px; line-height:1.45;}
+  .wrap{max-width:640px; margin:0 auto; padding:0 14px calc(120px + env(safe-area-inset-bottom));}
+
+  .topbar{position:sticky; top:0; z-index:50; background:var(--bg); padding:10px 14px 8px;
+          border-bottom:1px solid var(--line); margin:0 -14px 16px;}
+  .topbar-inner{max-width:640px; margin:0 auto;}
+  .topbar h1{font-size:15px; margin:0 0 8px; font-weight:600; display:flex; align-items:center; gap:8px;}
+  .topbar h1 .cnt{margin-left:auto; font-weight:500; color:var(--muted); font-size:13px; white-space:nowrap;}
+  .progress{height:6px; background:var(--line); border-radius:99px; overflow:hidden;}
+  .progress i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--blue),var(--blue-strong));
+              border-radius:99px; transition:width .35s ease;}
+
+  .hero{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:26px 20px; margin-top:26px; text-align:center;}
+  .hero .logo{font-size:52px; line-height:1;}
+  .hero h2{margin:14px 0 6px; font-size:22px;}
+  .hero p{color:var(--muted); font-size:15px; margin:6px 0;}
+  .hero .facts{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:16px 0 4px;}
+  .hero .facts span{background:var(--blue-light); color:var(--blue-strong); font-size:13px; padding:6px 12px; border-radius:99px;}
+  .btn{display:block; width:100%; border:0; border-radius:14px; padding:16px; font-size:17px; font-weight:600;
+       background:var(--blue); color:#fff; cursor:pointer; margin-top:12px; transition:filter .15s;}
+  .btn:active{filter:brightness(.85);}
+  .btn.ghost{background:transparent; color:var(--muted); font-weight:500; font-size:15px; padding:10px;}
+  .btn.tg{background:#229ED9;}
+  .btn.copy{background:var(--blue-strong);}
+  .btn.file{background:var(--muted);}
+  .btn.mail{background:transparent; color:var(--blue-strong); border:1.5px solid var(--blue-strong);}
+
+  .blockhead{display:flex; align-items:center; gap:12px; margin:6px 0 14px;}
+  .blockhead .ic{font-size:30px;}
+  .blockhead .tt{flex:1;}
+  .blockhead .tt h2{margin:0; font-size:20px;}
+  .blockhead .tt p{margin:3px 0 0; color:var(--muted); font-size:13.5px;}
+  .stepper{margin:14px 2px 0; color:var(--muted); font-size:13px;}
+
+  .q{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 16px 14px;
+     margin-bottom:12px; border-left:3px solid transparent;}
+  .q.done{border-left-color:var(--ok);}
+  .q .num{color:var(--muted); font-size:12px; font-weight:600; margin-bottom:4px;}
+  .q .qtext{font-size:16.5px; font-weight:600; margin:0 0 12px;}
+  .q .hint{font-size:13px; color:var(--muted); margin:-8px 0 12px;}
+
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{border:1.5px solid var(--line); background:transparent; color:var(--text); border-radius:12px;
+        padding:12px 16px; font-size:15.5px; font-weight:500; cursor:pointer; min-height:48px; transition:all .12s;}
+  .chip.sel{border-color:var(--blue); background:var(--blue); color:#fff;}
+  .chip.sel.ok{border-color:var(--ok); background:var(--ok);}
+  .chip:active{transform:scale(.97);}
+
+  .mchips{display:flex; flex-wrap:wrap; gap:8px;}
+  .mchip{border:1.5px solid var(--line); background:transparent; color:var(--text); border-radius:99px;
+         padding:11px 16px; font-size:15px; font-weight:500; cursor:pointer; min-height:46px; transition:all .12s;}
+  .mchip.sel{border-color:var(--blue); background:var(--blue-light); color:var(--blue-strong);}
+  .mchip:active{transform:scale(.96);}
+
+  textarea, input[type=text]{
+    width:100%; border:1.5px solid var(--line); background:var(--card); color:var(--text);
+    border-radius:12px; padding:13px 14px; font-size:16px; font-family:inherit; resize:vertical; min-height:76px;
+  }
+  textarea:focus, input:focus{outline:none; border-color:var(--blue);}
+  textarea.small{min-height:52px; font-size:14.5px;}
+
+  .addcomment{background:none; border:0; color:var(--blue-strong); font-size:13.5px; font-weight:600;
+              cursor:pointer; padding:8px 2px 0; margin-top:2px;}
+  .cbox{margin-top:10px; display:none;}
+  .cbox.show{display:block;}
+
+  .bulkbar{margin:2px 0 14px; text-align:center;}
+  .bulk{background:var(--blue-light); color:var(--blue-strong); border:0; border-radius:99px;
+        padding:11px 18px; font-size:14.5px; font-weight:600; cursor:pointer;}
+
+  .navbar{position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--card);
+          border-top:1px solid var(--line); padding:10px 14px calc(10px + env(safe-area-inset-bottom));}
+  .navbar-inner{max-width:640px; margin:0 auto; display:flex; gap:10px;}
+  .nav-btn{flex:1; border:0; border-radius:14px; padding:15px 10px; font-size:16.5px; font-weight:600; cursor:pointer;}
+  .nav-back{background:var(--bg); color:var(--muted);}
+  .nav-next{background:var(--blue); color:#fff;}
+  .nav-btn:disabled{opacity:.35; cursor:default;}
+  .nav-btn:active{filter:brightness(.85);}
+
+  .rev-block{display:flex; align-items:center; gap:10px; background:var(--card); border-radius:14px;
+             box-shadow:var(--shadow); padding:14px 16px; margin-bottom:8px; font-size:15.5px; cursor:pointer;
+             width:100%; border:0; color:var(--text); text-align:left; font-family:inherit;}
+  .rev-block .st{margin-left:auto; font-size:13px; font-weight:600; white-space:nowrap;}
+  .rev-block .st.full{color:var(--ok);} .rev-block .st.part{color:var(--warn);}
+  .sendcard{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px 16px; margin-top:14px;}
+  .sendcard h3{margin:0 0 6px; font-size:18px;}
+  .sendcard p{color:var(--muted); font-size:14px; margin:0 0 12px;}
+  .resultbox{width:100%; height:180px; margin-top:12px; font-size:12px; font-family:Menlo,Consolas,monospace;}
+  .ok-toast{position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:#1a2733; color:#fff;
+            padding:12px 22px; border-radius:99px; font-size:14.5px; z-index:99; opacity:0; pointer-events:none; transition:opacity .25s;}
+  .ok-toast.show{opacity:.96;}
+  .done-ic{font-size:56px; text-align:center; margin-top:30px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar"><div class="topbar-inner">
+    <h1><span>📋 Анкета запуска</span><span class="cnt" id="counter"></span></h1>
+    <div class="progress"><i id="pbar"></i></div>
+  </div></div>
+  <div id="app"></div>
+</div>
+
+<div class="navbar" id="navbar" style="display:none"><div class="navbar-inner">
+  <button class="nav-btn nav-back" id="btnBack">← Назад</button>
+  <button class="nav-btn nav-next" id="btnNext">Далее →</button>
+</div></div>
+
+<div class="ok-toast" id="toast">Скопировано ✓</div>
+
+<script>
+/* ============ КОНФИГ ============ */
+const CONTRACTOR_TG = ""; // ← @username подрядчика: кнопка Telegram откроет чат с ним напрямую
+const LS_KEY = "tg_anketa_v2";
+
+/* ============ ОПРОСНИК (70 вопросов, 13 блоков) ============ */
+const SURVEY = [
+{t:"Продукт и продажи", ic:"📦", d:"Пара слов о продукте — от этого зависят сценарии AI", q:[
+ {id:"p1", type:"text", q:"Что именно продаётся через Telegram?", h:"Товар или услуга, примеры позиций"},
+ {id:"p2", type:"text", q:"Кто целевая аудитория?", h:"География, язык, откуда приходят клиенты"},
+ {id:"p3", type:"text", q:"Как выглядит продажа от первого сообщения до оплаты?", h:"Кратко по шагам — это станет сценарием AI"},
+ {id:"p4", type:"text", q:"Какие вопросы и возражения возникают у клиентов чаще всего?", h:"Например: «дорого», «а это не развод?», «есть гарантия?»"},
+ {id:"p5", type:"text", q:"Что AI обязан и что ему запрещено говорить?", h:"Например: не обещать скидки, сроки доставки, гарантии возврата"},
+ {id:"p6", type:"text", q:"Сколько обращений в день ожидается и в какие часы пик?", h:"Нужно для настройки скорости ответов и нагрузки"},
+ {id:"p7", type:"yesno", q:"Есть ли готовые скрипты продаж или примеры успешных переписок?", h:"Если да — просто пришлите их после анкеты"}
+]},
+{t:"Оплата", ic:"💳", d:"Как система поймёт, что продажа состоялась", q:[
+ {id:"o1", type:"multi", q:"Какие способы оплаты используются?", opts:["Платёжная ссылка","CryptoBot","Криптовалюта (USDT и др.)","Перевод на карту","ЮKassa / карта по ссылке"]},
+ {id:"o2", type:"options", q:"Как система должна понимать, что оплата прошла?", opts:["Автоматически через платёжную систему","Оператор отмечает вручную"]},
+ {id:"o3", type:"yesno", q:"Должен ли AI менять сценарий после оплаты (режим «клиент уже купил»)?"},
+ {id:"o4", type:"text", q:"Как обрабатывать возвраты и спорные ситуации?", h:"Правило в двух словах: кто решает, что говорит AI"}
+]},
+{t:"Telegram-аккаунты", ic:"📱", d:"Что подключаем и в каком количестве", q:[
+ {id:"a1", type:"yesno", q:"Есть ли уже Telegram-аккаунты для подключения?"},
+ {id:"a2", type:"text", q:"Сколько аккаунтов сейчас и сколько в перспективе?", h:"Например: 10 сейчас, до 50 к концу года"},
+ {id:"a3", type:"yesno", q:"Нужен ли импорт истории существующих переписок в панель?"},
+ {id:"a4", type:"yesno", q:"Нужна ли автоматическая замена заблокированных аккаунтов?"},
+ {id:"a5", type:"yesno", q:"Нужен ли прогрев новых аккаунтов (постепенное наращивание активности)?"},
+ {id:"a6", type:"yesno", q:"Планируется ли Telegram Premium на аккаунтах?", h:"Premium увеличивает лимиты сообщений"}
+]},
+{t:"Клиентская база", ic:"👥", d:"Откуда берутся контакты и что о них храним", q:[
+ {id:"k1", type:"multi", q:"Откуда будут приходить контакты?", opts:["Входящие обращения","Существующие контакты аккаунтов","Загружаемые базы номеров","Парсинг групп и каналов"]},
+ {id:"k2", type:"text", q:"Если базы импортируются — в каком формате и объёме?", h:"Например: CSV, 5 000 номеров, с именами"},
+ {id:"k3", type:"text", q:"Какие данные о клиентах нужно хранить?", h:"Имя, телефон, теги, заметки, история покупок…"},
+ {id:"k4", type:"yesno", q:"Нужны ли сегментация и фильтры (теги, активность, статус сделки)?"},
+ {id:"k5", type:"options", q:"Аудитория тёплая или холодная?", opts:["Тёплая — уже общались","Холодная — первое касание","И та и другая"]},
+ {id:"k6", type:"yesno", q:"Нужен ли сбор новых лидов из групп и каналов (парсинг)?", h:"Можно отложить на вторую очередь — напишите, если так"}
+]},
+{t:"Прокси", ic:"🛡️", d:"Безопасность аккаунтов при массовой работе", q:[
+ {id:"pr1", type:"options", q:"Какие прокси использовать для аккаунтов?", opts:["Мобильные (надёжнее для больших объёмов)","Датацентровые","Есть свой пул — пришлю список"]},
+ {id:"pr2", type:"yesno", q:"Прокси уже куплены, или их нужно подобрать?"}
+]},
+{t:"AI-коммуникация", ic:"🤖", d:"Поведение, границы и стиль AI в диалогах", q:[
+ {id:"i1", type:"multi", q:"Каких AI-провайдеров нужно поддерживать?", opts:["DeepSeek","OpenAI (GPT)","Anthropic (Claude)","Google (Gemini)"]},
+ {id:"i2", type:"yesno", q:"Есть ли уже доступы (API-ключи) к нужным моделям?"},
+ {id:"i3", type:"options", q:"Должен ли AI отвечать новым клиентам сразу?", opts:["Да, сразу без подтверждения","Первый ответ подтверждает оператор"]},
+ {id:"i4", type:"options", q:"Что делать AI, если ответа нет в базе знаний?", opts:["Молчать и звать оператора","Отвечать «уточню и вернусь»","Давать ответ своими словами"]},
+ {id:"i5", type:"text", q:"В каких ситуациях AI обязан передать диалог оператору?", h:"Тригггеры: слова «жалоба», «возврат», крупная сумма, недовольство…"},
+ {id:"i6", type:"yesno", q:"Должен ли AI сам определять стадию сделки и заинтересованность клиента?"},
+ {id:"i7", type:"yesno", q:"Нужны ли авто-повторные обращения к клиентам, которые перестали отвечать?", h:"Например, через 24 часа — тайминг можно в комментарий"},
+ {id:"i8", type:"options", q:"Какой стиль общения у AI?", opts:["Дружеский, на «ты»","Нейтрально-деловой, на «вы»"]},
+ {id:"i9", type:"options", q:"Языки диалогов?", opts:["Только русский","Русский + автоопределение языка клиента"]},
+ {id:"i10", type:"options", q:"Режим работы AI?", opts:["24/7","По расписанию (ночью — автоответ «напишем утром»)"]},
+ {id:"i11", type:"yesno", q:"Обучение: копить библиотеку успешных диалогов и использовать их как примеры — подтверждаете подход?", h:"Так AI будет отвечать всё ближе к вашим лучшим продажам"}
+]},
+{t:"База знаний и медиа", ic:"📚", d:"Материалы, которыми пользуется AI и операторы", q:[
+ {id:"b1", type:"multi", q:"Что будет храниться в базе знаний?", opts:["Прайсы","FAQ / ответы на вопросы","Изображения","Видео","Документы","Ссылки на оплату"]},
+ {id:"b2", type:"text", q:"Какие форматы файлов нужно поддерживать помимо перечисленных?", h:"Если все стандартные — напишите «стандартные»"},
+ {id:"b3", type:"yesno", q:"Может ли AI сам подбирать и отправлять медиа из базы?"},
+ {id:"b4", type:"yesno", q:"Нужны ли категории, поиск и история изменений в базе знаний?"}
+]},
+{t:"Чаты и операторы", ic:"💬", d:"Команда и правила работы с диалогами", q:[
+ {id:"c1", type:"text", q:"Сколько операторов будет работать?", h:"Админ + операторы"},
+ {id:"c2", type:"text", q:"В каком графике работают операторы?", h:"Смены, часы — от этого зависит ночное поведение AI"},
+ {id:"c3", type:"yesno", q:"Нужно ли автоматическое распределение чатов между операторами?"},
+ {id:"c4", type:"text", q:"Какие метки и приоритеты нужны в очереди чатов?", h:"Например: «горит», «ждёт оплаты», «злой клиент»"},
+ {id:"c5", type:"options", q:"Что делать, если два оператора открыли один чат?", opts:["Блокировать второго","Разрешать обоим"]}
+]},
+{t:"Рассылки", ic:"📣", d:"Массовые кампании и защита от банов", q:[
+ {id:"r1", type:"text", q:"Какие типы рассылок нужны?", h:"Массовая по базе, повторные по молчащим, по сегментам…"},
+ {id:"r2", type:"yesno", q:"Нужна ли персонализация сообщений?", h:"Имя, город, упоминание прошлого диалога"},
+ {id:"r3", type:"yesno", q:"Нужны ли шаблоны и отложенный запуск по расписанию?"},
+ {id:"r4", type:"yesno", q:"Распределять рассылку между аккаунтами автоматически?"},
+ {id:"r5", type:"text", q:"Какие метрики рассылки важно видеть?", h:"Доставлено, прочитано, ответили, оплатили…"},
+ {id:"r6", type:"yesno", q:"Автоматически исключать из рассылки тех, кто ответил или купил?"},
+ {id:"r7", type:"text", q:"Есть ли уже опыт безопасных лимитов сообщений на аккаунт в день?", h:"Если нет — подберём на тестах, так и напишите"}
+]},
+{t:"Аналитика", ic:"📊", d:"Что показываем на экранах", q:[
+ {id:"n1", type:"text", q:"Какие 3–5 показателей должны быть на главном экране?", h:"Например: диалоги за день, конверсия в оплату, проблемные аккаунты"},
+ {id:"n2", type:"yesno", q:"Нужна ли аналитика по отдельности: AI / операторы / аккаунты?"},
+ {id:"n3", type:"yesno", q:"Нужен экспорт в Google Sheets (помимо Excel/CSV)?"},
+ {id:"n4", type:"yesno", q:"Нужны ли автоматические отчёты (дайджест дня / недели)?"}
+]},
+{t:"Уведомления", ic:"🔔", d:"О чём и как сообщаем", q:[
+ {id:"u1", type:"multi", q:"О каких событиях уведомлять?", opts:["Бан / ограничение аккаунта","Чат ждёт оператора","Успешная оплата","Ошибка AI или прокси","Рассылка завершена"]},
+ {id:"u2", type:"multi", q:"Куда дублировать уведомления?", opts:["Только в панели","Telegram-бот","Email"]}
+]},
+{t:"Инфраструктура и безопасность", ic:"🔒", d:"Где размещаем и как защищаем", q:[
+ {id:"f1", type:"yesno", q:"Есть ли уже сервер (VPS) для размещения панели?"},
+ {id:"f2", type:"text", q:"Если сервер есть — какая страна размещения? Есть ли домен?", h:"Если ни того, ни другого — напишите «нет», подберём"},
+ {id:"f3", type:"yesno", q:"Нужна ли двухфакторная аутентификация для входа в панель?"},
+ {id:"f4", type:"yesno", q:"Ограничивать ли доступ к панели по IP-адресам?"},
+ {id:"f5", type:"yesno", q:"Нужны ли автоматические резервные копии?"},
+ {id:"f6", type:"text", q:"Есть ли требования к хранению персональных данных клиентов?", h:"Внутренние регламенты, законодательство — если нет, так и напишите"},
+ {id:"f7", type:"text", q:"С какими внешними сервисами или CRM нужна интеграция?", h:"Если достаточно экспорта в Excel — напишите «экспорт достаточно»"}
+]},
+{t:"Приоритеты и старт", ic:"🚀", d:"Финал: что важнее и когда начинаем", q:[
+ {id:"s1", type:"multi", q:"Что обязательно должно работать в первой версии?", opts:["Подключение аккаунтов","Чаты и операторы","AI-диалоги","База знаний","Рассылки","Аналитика","Уведомления"]},
+ {id:"s2", type:"options", q:"Что важнее к первому запуску?", opts:["AI-диалоги","Рассылки","Одинаково важно"]},
+ {id:"s3", type:"text", q:"Желаемая дата запуска?", h:"Если жёсткого срока нет — напишите «чем быстрее, тем лучше»"},
+ {id:"s4", type:"options", q:"Как удобно обсуждать проект по ходу работы?", opts:["Telegram-чат","Созвон раз в неделю","Письменно по этапам"]},
+ {id:"s5", type:"text", q:"Дополнительные требования или сценарии, которые нужно учесть?", h:"Если нет — оставьте пустым"}
+]}
+];
+
+const TOTAL_Q = SURVEY.reduce((s,b)=>s+b.q.length,0);
+const YESNO = ["Да","Нет","На ваше усмотрение"];
+const OPT_DEF = "На ваше усмотрение";
+
+/* ============ СОСТОЯНИЕ ============ */
+let S = {answers:{}, name:"", tg:""};
+try{ const raw = localStorage.getItem(LS_KEY); if(raw){ const d = JSON.parse(raw); S = {answers:d.answers||{}, name:d.name||"", tg:d.tg||""}; } }catch(e){}
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
+function ans(id){ return S.answers[id] || {}; }
+let cur = -1; // -1 = стартовый экран, 0..12 = блоки, 13 = ревью
+
+function isAnswered(q){ const a = ans(q.id);
+  if(q.type==="text") return !!(a.c && a.c.trim());
+  if(a.v===undefined||a.v===null) return false;
+  if(Array.isArray(a.v)) return a.v.length>0;
+  return String(a.v).trim()!==""; }
+function blockAnswered(b){ return b.q.filter(q=>isAnswered(q)).length; }
+
+function setVal(id, v){ S.answers[id] = Object.assign({}, S.answers[id], {v:v}); save(); refreshQ(id); }
+function setComment(id, c){ S.answers[id] = Object.assign({}, S.answers[id], {c:c}); save(); }
+function toggleMulti(id, opt){
+  const a = ans(id); const arr = Array.isArray(a.v)? a.v.slice() : [];
+  const i = arr.indexOf(opt); if(i>=0) arr.splice(i,1); else arr.push(opt);
+  S.answers[id] = Object.assign({}, a, {v:arr}); save(); refreshQ(id);
+}
+
+/* ============ ОТРИСОВКА ============ */
+const app = document.getElementById("app");
+const navbar = document.getElementById("navbar");
+const btnBack = document.getElementById("btnBack");
+const btnNext = document.getElementById("btnNext");
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function attr(s){ return esc(s).replace(/"/g,"&quot;"); }
+
+function updateTop(){
+  if(cur<0) return;
+  const done = SURVEY.reduce((s,b)=>s+blockAnswered(b),0);
+  document.getElementById("counter").textContent = done + " / " + TOTAL_Q;
+  document.getElementById("pbar").style.width = Math.round(done/TOTAL_Q*100)+"%";
+}
+
+function chipRow(qid, opts, sel, okIfYes){
+  return '<div class="chips" id="chips-'+qid+'">' + opts.map(o=>{
+    const isSel = sel===o;
+    const okCls = (okIfYes && isSel && o==="Да")? "ok" : "";
+    return '<button type="button" class="chip '+okCls+(isSel?" sel":"")+'" onclick="setVal(\''+qid+'\',\''+attr(o)+'\')">'+esc(o)+'</button>';
+  }).join("") + '</div>';
+}
+function multiRow(q, sel){
+  return '<div class="mchips" id="chips-'+q.id+'">' + q.opts.map(o=>
+    '<button type="button" class="mchip'+(sel.includes(o)?" sel":"")+'" onclick="toggleMulti(\''+q.id+'\',\''+attr(o)+'\')">'+esc(o)+'</button>'
+  ).join("") + '</div>';
+}
+function commentBox(q){
+  const a = ans(q.id); const has = a.c && a.c.trim();
+  return '<button type="button" class="addcomment" onclick="toggleCbox(\''+q.id+'\')">'+(has?"✎ комментарий":"＋ комментарий")+'</button>'+
+    '<div class="cbox'+(has?" show":"")+'" id="cb-'+q.id+'">'+
+    '<textarea class="small" placeholder="Уточнение…" oninput="setComment(\''+q.id+'\',this.value)">'+esc(a.c||"")+'</textarea></div>';
+}
+function toggleCbox(id){ const el = document.getElementById("cb-"+id); el.classList.toggle("show");
+  if(el.classList.contains("show")) el.querySelector("textarea").focus(); }
+
+function qBody(q){
+  const a = ans(q.id);
+  if(q.type==="text"){
+    return '<textarea placeholder="'+attr(q.h||"Ваш ответ…")+'" oninput="setComment(\''+q.id+'\',this.value)">'+esc(a.c||"")+'</textarea>';
+  }
+  if(q.type==="yesno") return chipRow(q.id, YESNO, a.v, true) + commentBox(q);
+  if(q.type==="options") return chipRow(q.id, q.opts.concat([OPT_DEF]), a.v, false) + commentBox(q);
+  return multiRow(q, Array.isArray(a.v)? a.v : []) + commentBox(q);
+}
+
+function qCard(q, idx){
+  const answered = isAnswered(q);
+  return '<div class="q'+(answered?" done":"")+'" id="q-'+q.id+'">'+
+    '<div class="num">Вопрос '+idx+'</div>'+
+    '<div class="qtext">'+esc(q.q)+'</div>'+
+    (q.type!=="text" && q.h ? '<div class="hint">'+esc(q.h)+'</div>' : '')+
+    qBody(q)+'</div>';
+}
+
+/* обновление одной карточки без перерисовки блока (чтобы не терять фокус и комментарии) */
+function refreshQ(id){
+  const el = document.getElementById("q-"+id); if(!el) { updateTop(); return; }
+  const b = SURVEY[cur]; const q = b.q.find(x=>x.id===id); if(!q) return;
+  const idx = b.q.indexOf(q)+1;
+  const tmp = document.createElement("div"); tmp.innerHTML = qCard(q, idx);
+  el.className = tmp.firstChild.className;
+  const oldCbox = el.querySelector(".cbox"); const newCbox = tmp.firstChild.querySelector(".cbox");
+  if(oldCbox && newCbox) newCbox.className = oldCbox.className;
+  const oldTa = oldCbox ? oldCbox.querySelector("textarea") : null;
+  el.innerHTML = tmp.firstChild.innerHTML;
+  if(oldCbox && oldCbox.classList.contains("show")){
+    const ta = el.querySelector(".cbox textarea");
+    if(ta && oldTa){ ta.value = oldTa.value; ta.selectionStart = ta.selectionEnd = ta.value.length; }
+  }
+  updateTop();
+}
+
+function showStart(){
+  navbar.style.display="none";
+  const hasProg = Object.keys(S.answers).length>0;
+  app.innerHTML = `
+  <div class="hero">
+    <div class="logo">📋</div>
+    <h2>Анкета запуска проекта</h2>
+    <p><b>Telegram-платформа продаж с AI</b></p>
+    <p>Ответьте на вопросы — на их основе мы зафиксируем требования и соберём систему под ваш процесс.</p>
+    <div class="facts">
+      <span>⏱ ~10–15 минут</span><span>📱 с телефона</span><span>👆 в один тап</span><span>💾 прогресс сохраняется</span>
+    </div>
+    <button class="btn" onclick="go(0)">${hasProg?"Продолжить заполнение →":"Начать →"}</button>
+    ${hasProg?`<button class="btn ghost" onclick="resetAll()">Начать заново (сбросить ответы)</button>`:""}
+    <p style="margin-top:16px; font-size:13px;">Не знаете ответ — выбирайте «На ваше усмотрение»:<br>мы предложим решение сами.</p>
+  </div>`;
+  document.getElementById("counter").textContent = "";
+  document.getElementById("pbar").style.width = hasProg ? "50%" : "0%";
+}
+
+function showBlock(i){
+  const b = SURVEY[i];
+  navbar.style.display="block";
+  const rem = b.q.filter(q=>q.type!=="text" && !isAnswered(q)).length;
+  app.innerHTML = `
+    <div class="stepper">Блок ${i+1} из ${SURVEY.length}</div>
+    <div class="blockhead">
+      <div class="ic">${b.ic}</div>
+      <div class="tt"><h2>${esc(b.t)}</h2><p>${esc(b.d)}</p></div>
+    </div>
+    ${rem>1?`<div class="bulkbar"><button class="bulk" onclick="setBlockDefault(${i})">Остальное в этом блоке — на ваше усмотрение</button></div>`:""}
+    ${b.q.map((q,j)=>qCard(q, j+1)).join("")}
+  `;
+  btnBack.disabled = false;
+  btnBack.textContent = i===0 ? "← В начало" : "← Назад";
+  btnNext.textContent = i===SURVEY.length-1 ? "Завершить ✓" : "Далее →";
+  updateTop(); window.scrollTo({top:0});
+}
+
+function showReview(){
+  navbar.style.display="none";
+  const rows = SURVEY.map((b,i)=>{
+    const d = blockAnswered(b), tot = b.q.length;
+    return `<button type="button" class="rev-block" onclick="go(${i})">
+      <span>${b.ic}</span><span>${esc(b.t)}</span>
+      <span class="st ${d===tot?"full":"part"}">${d} / ${tot}</span></button>`;
+  }).join("");
+  app.innerHTML = `
+    <div class="done-ic">✅</div>
+    <div class="hero" style="margin-top:8px">
+      <h2>Анкета заполнена</h2>
+      <p>Проверьте блоки — в них ещё можно что-то поправить.<br>Неотвеченное уйдёт как «на ваше усмотрение».</p>
+    </div>
+    <div style="margin-top:14px">${rows}</div>
+    <div class="sendcard">
+      <h3>Отправка</h3>
+      <p>Укажите, как с вами связаться, и отправьте ответы.<br>Кнопка Telegram — самый быстрый способ.</p>
+      <input type="text" id="fname" placeholder="Ваше имя" value="${attr(S.name)}" style="margin-bottom:8px; min-height:48px;" oninput="S.name=this.value;save();refreshResult()">
+      <input type="text" id="ftg" placeholder="Ваш Telegram (@username или телефон)" value="${attr(S.tg)}" style="min-height:48px;" oninput="S.tg=this.value;save();refreshResult()">
+      <button class="btn tg" onclick="sendTG()">✈️ Отправить в Telegram</button>
+      <button class="btn copy" onclick="copyAll()">📋 Скопировать ответы</button>
+      <button class="btn file" onclick="downloadAll()">⬇️ Скачать файл</button>
+      <button class="btn mail" onclick="mailAll()">✉️ Отправить на email</button>
+      <textarea class="resultbox" id="resultbox" readonly></textarea>
+    </div>`;
+  document.getElementById("resultbox").value = buildText();
+  updateTop();
+}
+
+function go(i){
+  cur = i;
+  if(i<0) showStart();
+  else if(i>=SURVEY.length) showReview();
+  else showBlock(i);
+}
+function resetAll(){ if(confirm("Сбросить все ответы и начать заново?")){ S={answers:{},name:"",tg:""}; save(); showStart(); } }
+function setBlockDefault(bi){
+  const b = SURVEY[bi];
+  b.q.forEach(q=>{ if(q.type!=="text" && !isAnswered(q)) S.answers[q.id]={v:OPT_DEF, c:undefined}; });
+  save(); showBlock(bi); window.scrollTo({top:0});
+}
+
+/* ============ РЕЗУЛЬТАТ ============ */
+function fmtA(q){
+  const a = ans(q.id); let v;
+  if(q.type==="text") v = (a.c&&a.c.trim())? a.c.trim() : null;
+  else if(Array.isArray(a.v)) v = a.v.length? a.v.join(", ") : null;
+  else v = a.v!==undefined? a.v : null;
+  const c = (q.type!=="text" && a.c && a.c.trim()) ? " (комментарий: "+a.c.trim()+")" : "";
+  return (v===null? "— на ваше усмотрение" : v) + c;
+}
+function buildText(){
+  let out = "АНКЕТА ЗАПУСКА ПРОЕКТА — Telegram-платформа с AI\n";
+  if(S.name||S.tg) out += "Заполнил: "+(S.name||"—")+(S.tg? " | Telegram: "+S.tg : "")+"\n";
+  out += "Дата: "+new Date().toLocaleDateString("ru-RU")+" "+new Date().toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"})+"\n";
+  out += "==============================================\n";
+  let n=0;
+  SURVEY.forEach(b=>{
+    out += "\n["+b.ic+" "+b.t.toUpperCase()+"]\n";
+    b.q.forEach(q=>{ n++; out += n+". "+q.q+"\n   → "+fmtA(q)+"\n"; });
+  });
+  return out;
+}
+function sendTG(){
+  const txt = buildText();
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).catch(()=>{});
+  const u = CONTRACTOR_TG ? CONTRACTOR_TG.replace("@","") : "";
+  window.open(u ? "https://t.me/"+u : "https://t.me/", "_blank");
+  toast("Ответы скопированы — вставьте в чат" + (u ? "" : " с подрядчиком"));
+}
+function copyAll(){
+  const txt = buildText(); const box = document.getElementById("resultbox");
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(()=>toast("Ответы скопированы ✓")).catch(()=>fallbackCopy(box));
+  } else fallbackCopy(box);
+}
+function fallbackCopy(box){ box.focus(); box.select(); box.setSelectionRange(0,999999);
+  try{ document.execCommand("copy"); toast("Ответы скопированы ✓"); }catch(e){ toast("Выделите текст и скопируйте вручную"); } }
+function downloadAll(){
+  const blob = new Blob(["\ufeff"+buildText()], {type:"text/plain;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "anketa_telegram_ai.txt";
+  a.click(); URL.revokeObjectURL(a.href); toast("Файл скачан ✓");
+}
+function mailAll(){
+  location.href = "mailto:?subject="+encodeURIComponent("Анкета запуска — Telegram-платформа с AI")+"&body="+encodeURIComponent(buildText().slice(0,1800));
+}
+function refreshResult(){ const rb = document.getElementById("resultbox"); if(rb) rb.value = buildText(); }
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2400);
+}
+
+btnBack.onclick = ()=>{ if(cur===0) go(-1); else if(cur>0) go(cur-1); };
+btnNext.onclick = ()=>{ go(cur+1); };
+
+showStart();
+</script>
+</body>
+</html>
